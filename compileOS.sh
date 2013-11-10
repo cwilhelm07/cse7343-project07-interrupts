@@ -1,4 +1,5 @@
-rm -f kernel.o
+rm -f kernel.o kernel_asm.o
+as86 kernel.asm -o kernel_asm.o
 bcc -ansi -c -o kernel.o kernel.c
 ld86 -o kernel -d kernel.o kernel_asm.o
 if [ ! -f kernel ]; then

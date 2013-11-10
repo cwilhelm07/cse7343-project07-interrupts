@@ -1,7 +1,5 @@
 /* kernel.c
-   A simple kernel that displays "Hello World!".
-   Will write each byte (ascii then color) starting
-   on the leftmost column of row 3.
+   Project 7: System Calls
    
    Chris Wilhelm
 */
@@ -22,8 +20,9 @@ void printString(char*);
 void printChar(char);
 void readString(char*);
 void readSector(char*, int);
-int mod(int a, int b);
-int div(int a, int b);
+void handleInterrupt21(int, int, int, int);
+int mod(int, int);
+int div(int, int);
 
 int main() {
    char line[80];
@@ -33,10 +32,14 @@ int main() {
    printString("Enter a line: \0");
    readString(line);
    printString(line);
-*/
+
    // Read message from sector 30
    readSector(buffer, 30);
    printString(buffer);
+*/
+   // Call makeInterrupt21() and interrupt 21
+   makeInterrupt21();
+   interrupt(0x21, 0, 0, 0, 0);
 
    while(1);
 }
@@ -103,6 +106,11 @@ void readSector(char buffer[512], int sector)
    int dx = dh * 256 + dl;
 
    interrupt(SECTOR_RW_INTERRUPT, ax, buffer, cx, dx);
+}
+
+void handleInterrupt21(int ax, int bx, int cx, int dx)
+{
+   printString("IT WORKS!\0");
 }
 
 int mod(int a, int b)
