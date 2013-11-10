@@ -27,19 +27,23 @@ int div(int, int);
 int main() {
    char line[80];
    char buffer[512];
-   /*
+
+// Step 1 and 2:
    // Printing to the screen using interrupts
    printString("Enter a line: \0");
    readString(line);
    printString(line);
 
+// Step 3:
    // Read message from sector 30
    readSector(buffer, 30);
    printString(buffer);
-*/
+
+// Step 4 and 5:
    // Call makeInterrupt21() and interrupt 21
    makeInterrupt21();
-   interrupt(0x21, 0, 0, 0, 0);
+   interrupt(0x21, 1, line, 0, 0);
+   interrupt(0x21, 0, line, 0, 0);
 
    while(1);
 }
@@ -110,7 +114,21 @@ void readSector(char buffer[512], int sector)
 
 void handleInterrupt21(int ax, int bx, int cx, int dx)
 {
-   printString("IT WORKS!\0");
+   switch ( ax )
+   {
+      case 0: // print string
+         printString(bx);
+         break;
+      case 1: // read string
+         readString(bx);
+         break;
+      case 2: // read sector
+         readSector(bx, cx);
+         break;
+      default:
+         printString("Error: Invalid Command\0");
+         break;
+   }
 }
 
 int mod(int a, int b)
